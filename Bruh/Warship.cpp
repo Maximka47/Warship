@@ -16,25 +16,60 @@ void clear(char fill = ' ') {
 
 int main()
 {
+    srand(time(0));
     clear();
+    int ships = 7;
     int choice;
     std::cout << "~~WARSHIPS~~\n\n";
     std::cout << "1. Single Player\n";
-    std::cout << "2. PvP\n";
+    std::cout << "2. PvP\n\n";
+    std::cout << "3. Change number of ships (default is 7)\n";
+    std::cout << "4. Show field\n\n";
     std::cout << "Choose a game mode:";
     std::cin >> choice;
     clear();
     std::cout << "~~WARSHIPS~~\n\n";
-    
-    srand(time(0));
-
+    const int rows = 4;
+    const int cols = 4;
     int field[4][4] = {
+        { 1, 0, 0, 1 },
         { 0, 1, 0, 1 },
-        { 0, 1, 0, 0 },
-        { 0, 1, 0, 1 },
-        { 1, 0, 1, 0 }
+        { 0, 0, 1, 0 },
+        { 0, 1, 0, 1 }
     };
-    int pchitslanded[16][2];
+    int randcoordx = 0;
+    int randcoordy = 0;
+    
+    if (choice == 4) {
+        for (int i = 0; i < 4; i++) {
+            for (int y = 0; y < 4; y++) {
+                std::cout << field[i][y] << " ";
+            }
+            std::cout << "\n";
+        }
+        std::cout << "\n\n";
+        char returnval = ' ';
+        std::cout << "Type <m> to return to main menu: ";
+        std::cin >> returnval;
+        if (returnval == 'm') {
+            main();
+        }
+    }
+
+    if (choice == 3) {
+        clear();
+        std::cout << "~~WARSHIPS~~\n\n";
+        
+        std::cout << "Choose a number of ships to destroy: ";
+        std::cin >> ships;
+        while (ships > 12) {
+            std::cout << "\n!!!Ships number must be less then 12!!!\n\n";
+            std::cout << "Choose a number of ships to destroy: ";
+            std::cin >> ships;
+        }
+
+        main();
+    }
 
     if (choice == 2) {
         int hits1p = 0;
@@ -44,7 +79,7 @@ int main()
         int turns2p = 0;
         int turnsum = 0;
 
-        while (hitsum < 7) {
+        while (hitsum < ships) {
             int x, y;
 
             //P1 Selecting coordinates
@@ -65,13 +100,13 @@ int main()
                 ++hits1p;
                 ++hitsum;
 
-                std::cout << "Hit! " << 7 - (hitsum) << " hits left. \n\n";
+                std::cout << "Hit! " << ships - (hitsum) << " hits left. \n\n";
             }
             else {
                 std::cout << "Miss\n\n";
             }
             turns1p++;
-            if (hitsum < 7) {
+            if (hitsum < ships) {
                 //P2 Selecting coordinates
                 std::cout << "<Player 2 Select coordinates>\n\n";
 
@@ -90,7 +125,7 @@ int main()
                     ++hits2p;
                     ++hitsum;
 
-                    std::cout << "Hit! " << 7 - (hitsum) << " hits left. \n\n";
+                    std::cout << "Hit! " << ships - (hitsum) << " hits left. \n\n";
                 }
                 else {
                     std::cout << "Miss\n\n";
@@ -98,15 +133,16 @@ int main()
                 turns2p++;
             }
         }
-        std::cout << "Victory!\n";
+        clear();
+        std::cout << "Victory!\n\n";
         if (hits1p > hits2p) {
-            std::cout << "Player 1 won in " << turns1p << " turns.\n";
+            std::cout << "Player 1 won in " << turns1p << " turns.\n\n\n";
         }
         else if (hits2p > hits1p) {
-            std::cout << "Player 2 won in " << turns2p << " turns.\n\n";
+            std::cout << "Player 2 won in " << turns2p << " turns.\n\n\n";
         }
 
-        std::cout << "Type q to quit, or type <r> to restart: ";
+        std::cout << "Type <q> to quit, or type <r> to restart: ";
         char outcome;
         std::cin >> outcome;
         if (outcome == 'q') {
@@ -123,7 +159,7 @@ int main()
         int pchits = 0;
         int pcturns = 0;
 
-        while (p1hits + pchits < 7) {
+        while (p1hits + pchits < ships) {
             int x, y;
 
             //Player Turn
@@ -146,7 +182,7 @@ int main()
                 field[x][y] = 0;
 
                 ++p1hits;
-                std::cout << "Hit! " << 7 - p1hits - pchits << " hits left. \n\n";
+                std::cout << "Hit! " << ships - p1hits - pchits << " hits left. \n\n";
             }
             else {
                 std::cout << "Miss\n\n";
@@ -154,7 +190,7 @@ int main()
             p1turns++;
 
             int x1, y1, sleeptime;
-            if (7 - p1hits - pchits > 0) {
+            if (ships - p1hits - pchits > 0) {
                 //PC Turn
                 x1 = rand() % 4 + 1;
                 y1 = rand() % 4 + 1;
@@ -184,7 +220,7 @@ int main()
 
                     ++pchits;
 
-                    std::cout << "Hit! " << 7 - pchits - p1hits << " hits left. \n\n";
+                    std::cout << "Hit! " << ships - pchits - p1hits << " hits left. \n\n";
                 }
                 else {
                     std::cout << "Miss\n\n";
@@ -201,6 +237,7 @@ int main()
             std::cout << "PC won in " << pcturns << " turns.\n\n";
         }
     }
+   
 
     std::cout << "Type <q> to quit, or type <r> to restart: ";
     char outcome;
